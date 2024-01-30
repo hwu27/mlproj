@@ -7,7 +7,8 @@ const upload = multer({ dest: 'uploads/' });
 const fs = require('fs');
 // For database access through mongoose
 const mongoose = require('mongoose');
-mongoose.connect('mongodb+srv://huw029:123w123u@mlproj.cg6drd2.mongodb.net/?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true });
+// Check instructions
+mongoose.connect('', { useNewUrlParser: true, useUnifiedTopology: true });
 
 const annotationSchema = new mongoose.Schema({
     startId: String,
