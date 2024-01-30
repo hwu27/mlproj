@@ -1,84 +1,72 @@
+// Initialize global variables
 var startId;
 var endId;
 var selectedInfo;
 
+// Import the captureHighlight function from the highlight.js module
 import { captureHighlight } from './highlight.js';
 
-// Hide context menu when clicking elsewhere
+// Add an event listener to the document for the 'click' event
 document.addEventListener('click', function(event) {
+    // Hide the context menu if the click is not on an input element or the annotate div
     if (event.target.tagName === 'INPUT' || event.target.id === 'annotate-div'){
         return;
     }
     document.getElementById('contextMenu').style.display = 'none';
 });
 
-
-// For when you highlight the text and click
+// Function to get the text selected by the user
 function getSelectedText() {
     const selection = window.getSelection();
-    console.log(selection);
+    // Check if there is any text selected
     if (selection.rangeCount === 0) {
         console.log("No selection or selection is collapsed");
-        return null; // Ensure there is a selection
+        return null;
     }
-    // Start and end nodes of the selection
+    // Determine the start and end nodes of the selection
     const anchorNode = selection.anchorNode;
     const focusNode = selection.focusNode;
 
-    //console.log("Anchor Node: ", anchorNode);
-    //console.log("Focus Node: ", focusNode);
-
-    // Find the parent span elements of the selected text
+    // Find the nearest span elements enclosing the selected text
     const anchorSpan = anchorNode.nodeType === Node.TEXT_NODE ? anchorNode.parentNode : anchorNode;
     const focusSpan = focusNode.nodeType === Node.TEXT_NODE ? focusNode.parentNode : focusNode;
-    //console.log("Anchor Span: ", anchorSpan);
-    //console.log("Focus Span: ", focusSpan);
 
-    // Ensure the spans are within the code block and have an ID
+    // Check if the spans are valid and within a code block with an ID
     if (!anchorSpan || !focusSpan || !anchorSpan.closest('code') || !focusSpan.closest('code') ||
         !anchorSpan.id || !focusSpan.id) {
         console.log("One of the spans does not have an ID");
         return null;
     }
-    // Selected text doesnt work
+
     const selectedText = selection.toString().trim();
-    //console.log("Selected Text: ", selectedText);
     
+    // Return an object containing the IDs of the start and end spans, the selected text, and the selection object
     return { startId: anchorSpan.id, endId: focusSpan.id, selectedText: selectedText , selected: selection };
 }
 
-// Displays the context menu for different tools
+// Function to display a custom context menu
 function showContextMenu(event) {
-    // Prevent the browser's context menu from appearing
-    event.preventDefault();
-    
+    event.preventDefault(); // Prevent default browser context menu
+
     selectedInfo = getSelectedText();
     if (selectedInfo) {
-        // Store the captured selection information
         console.log(selectedInfo);
     }
-    // Show custom context menu
     var contextMenu = document.getElementById('contextMenu');
     contextMenu.style.display = 'block';
     contextMenu.style.left = event.pageX + 'px';
     contextMenu.style.top = event.pageY + 'px';
     
-    // Store selected text in a hidden input field or in a JavaScript variable
-    // So it can be used when the user clicks on the context menu option
     document.getElementById('selected-text').value = "Annotate";
-
 }
 window.showContextMenu = showContextMenu;
 
-// Add annotation logic
+// Function to add an annotation
 function addAnnotation() {
+    if (!selectedInfo) return; // Return if no valid text is selected
 
-    if (!selectedInfo) return; // No valid text selected
     startId = selectedInfo.startId;
     endId = selectedInfo.endId;
-
-    console.log("startId:" + startId);
-    console.log("endId:" + endId);
 
     var input = document.createElement('INPUT');
     input.setAttribute('id', 'input-text');
@@ -87,36 +75,32 @@ function addAnnotation() {
 
     document.getElementById('contextMenu').appendChild(input);
 
+    // Prevent default behavior for mousedown event on input
     input.addEventListener('mousedown', function(event) {
         event.preventDefault();
     });
 
-    // Focus the input box so the user can immediately start typing
-    input.focus();
+    input.focus(); // Auto-focus the input box
 
+    // Event listener for pressing Enter key in the input box
     input.addEventListener('keypress', function(event) {
         if (event.key === 'Enter') {
-            // Pass in selection
-            console.log("This is the selection: " + selectedInfo.selected);
-            // Get the annotation text from the input
             var annotationText = document.getElementById('input-text').value;
             if (annotationText) {
-                // Implement saving the annotation, as shown previously
                 saveAnnotation(selectedInfo.startId, selectedInfo.endId, input.value);
-                // Remove the input and button after submitting the annotation
                 document.getElementById('contextMenu').removeChild(input);
             }
             document.getElementById('contextMenu').style.display = 'none';
-            captureHighlight(startId, endId);
+            captureHighlight(startId, endId); // Highlight the selected text
         }
         
     });
 }
 window.addAnnotation = addAnnotation;
 
-// Saves annotations 
+// Function to save annotations
 function saveAnnotation(startId, endId, text) {
-    // Use fetch or another AJAX method to send the annotation to the server
+    // Send a POST request to the server with the annotation details
     fetch('/save_annotation', {
         method: 'POST',
         headers: {
@@ -127,32 +111,29 @@ function saveAnnotation(startId, endId, text) {
     .then(response => response.json())
     .then(data => {
         if(data.success) {
-            // Create a new div to display the annotation
-            var newDiv = document.createElement('div'); 
-            newDiv.setAttribute('id', 'annotation-' + startId); // Use startId for uniqueness
-            newDiv.textContent = text; // Set the text to the annotation
+            var newDiv = document.createElement('div');
+            newDiv.setAttribute('id', 'annotation-' + startId);
+            newDiv.textContent = text;
             document.getElementById('annotations-div').appendChild(newDiv);
         } else {
-            // Handle error
             console.error('Failed to save annotation.');
         }
     })
     .catch(error => {
-        console.error('Error:', error); 
+        console.error('Error:', error);
     });
 }
 
-// Loads annotations
+// Load annotations on document load
 document.addEventListener('DOMContentLoaded', () => {
     fetch('/load_annotations')
         .then(response => response.json())
         .then(annotations => {
             annotations.forEach(annotation => {
                 var newDiv = document.createElement('div');
-                newDiv.textContent = annotation.text; 
+                newDiv.textContent = annotation.text;
                 document.getElementById('annotations-div').appendChild(newDiv);
             });
         })
         .catch(error => console.error('Error loading annotations:', error));
 });
-
