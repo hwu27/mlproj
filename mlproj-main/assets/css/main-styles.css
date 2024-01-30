@@ -1,0 +1,107 @@
+#robot-icon {
+  margin-right: 15px;
+}
+
+.button-custom {
+  background-color: #C884C0;
+  color: white;
+  height: 100%;
+  width: 100%;
+}
+
+.button-header {
+  background-color: #C884C0;
+  color: white;
+}
+
+.start-middle {
+  font-size: 45px;
+  font-weight: bold;
+}
+
+.button-cluster {
+  background: transparent;
+  color: black;
+}
+
+.sub-heading {
+  margin: 30px;
+}
+
+.question {
+  margin: 30px;
+  font-size: 25px;
+}
+
+.answer {
+  margin: 30px;
+}
+
+.main-color {
+  color: #c884c0;
+}
+
+.link-color {
+  text-decoration: underline;
+  text-decoration-color: #c884c0;
+}
+
+.list-main {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+a:hover {
+  opacity: 0.7;
+}
+
+.input-section {
+  padding: 100px;
+  border-style: dashed;
+  margin-left: 100px;
+  margin-right: 100px;
+}
+
+.top-column {
+  border-style: solid;
+  border-width: 1px;
+}
+
+#contextMenu {
+  display: none;
+  position: absolute;
+  z-index: 1000;
+  background-color: white;
+  width: 100px;
+  height: 50px;
+}
+
+#annotate-div {
+  border-style: solid;
+  border-radius: 1px;
+}
+
+.highlight {
+  background-color: yellow !important;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#annotate-div {
+  -webkit-user-select: none; /* Chrome, Safari, Opera */
+  -moz-user-select: none;    /* Firefox */
+  -ms-user-select: none;     /* Internet Explorer/Edge */
+  user-select: none;         /* Non-prefixed version, currently supported by Chrome, Opera, and Firefox */
+}
+
+#contextMenu {
+  user-select: none; /* Standard syntax */
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+}

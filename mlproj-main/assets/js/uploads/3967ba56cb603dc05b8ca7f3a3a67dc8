@@ -1,0 +1,119 @@
+import json
+import random
+import numpy as np
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.preprocessing import LabelEncoder
+
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.ensemble import VotingClassifier
+from sklearn.metrics import f1_score
+
+import nltk
+
+from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
+from nltk.stem import PorterStemmer
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.svm import SVC
+from sklearn.model_selection import RandomizedSearchCV
+from sklearn.pipeline import make_pipeline
+from sklearn.metrics import classification_report
+from nltk.stem import WordNetLemmatizer
+from sklearn.utils.class_weight import compute_sample_weight
+
+import string
+
+# Load the SQuAD dataset
+with open('train-v2.0.json') as file:
+    squad_data = json.load(file)
+
+# Specify the desired downsampled size (e.g., 10% of the original data)
+downsampled_size = int(0.01 * len(squad_data['data']))  # Adjust the percentage as needed
+
+# Randomly select a subset of articles while maintaining their original order
+downsampled_data = random.sample(squad_data['data'], downsampled_size)
+
+downsampled_json = {'data': downsampled_data}
+with open('downsampled_squad.json', 'w') as outfile:
+    json.dump(downsampled_json, outfile, indent=4)
+
+stemmer = PorterStemmer()
+
+# Extract data
+contexts = []
+questions = []
+answers = []
+
+# Text preprocessing function
+def preprocess_text(text):
+    # Lowercase the text
+    text = text.lower()
+    
+    # Tokenization
+    tokens = word_tokenize(text)
+    
+    # Remove stopwords and punctuation
+    stop_words = set(stopwords.words('english'))
+    tokens = [word for word in tokens if word not in stop_words and word not in string.punctuation]
+    
+    # Stemming (you can choose to use lemmatization instead)
+    tokens = [stemmer.stem(word) for word in tokens]
+    
+    # Rejoin tokens to form preprocessed text
+    preprocessed_text = ' '.join(tokens)
+    
+    return preprocessed_text
+
+for article in downsampled_json['data']:
+    for paragraph in article['paragraphs']:
+        context = paragraph['context']
+        for qa in paragraph['qas']:
+            question = qa['question']
+            for answer in qa['answers']:
+                # Apply text preprocessing to context, question, and answer
+                context = preprocess_text(context)
+                question = preprocess_text(question)
+                answer_text = preprocess_text(answer['text'])
+                
+                contexts.append(context)
+                questions.append(question)
+                answers.append(answer_text)
+
+# Convert text to numerical data
+vectorizer = CountVectorizer()
+X_context = vectorizer.fit_transform(contexts).toarray()
+X_question = vectorizer.transform(questions).toarray()
+
+# Convert labels to numerical labels
+label_encoder = LabelEncoder()
+y_encoded = label_encoder.fit_transform(answers) 
+
+# Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X_context, y_encoded, test_size=0.2, random_state=42)
+
+# Create instances of individual classifiers
+lr_classifier = LogisticRegression(solver='liblinear', random_state=42)
+nb_classifier = MultinomialNB()
+
+# Create a VotingClassifier ensemble
+ensemble_classifier = VotingClassifier(
+    estimators=[
+        ('lr', lr_classifier),
+        ('nb', nb_classifier),
+        # Add more classifiers here as needed
+    ],
+    voting='soft'  # Use "soft" voting to consider class probabilities
+)
+
+# Train the ensemble classifier
+ensemble_classifier.fit(X_train, y_train)
+
+# Make predictions using the ensemble classifier
+ensemble_predictions = ensemble_classifier.predict(X_test)
+
+# Evaluate the performance of the ensemble
+ensemble_f1 = f1_score(y_test, ensemble_predictions, average='micro')
+print(f"Ensemble F1 Score: {ensemble_f1 * 100:.2f}%")
