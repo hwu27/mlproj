@@ -25,6 +25,9 @@ This document provides instructions for setting up and running the server for ML
 
 - Click Connect and then choose the VSCode option
 ![image](https://github.com/hwu27/mlproj/assets/130116077/e41ec684-e9e1-4854-b001-1d53a4e1e3ae)
+
+
+
 ![image](https://github.com/hwu27/mlproj/assets/130116077/83250814-6ad7-4279-a411-4b109ced97ed)
 
 4. **Check Directory Paths for Static Files**
