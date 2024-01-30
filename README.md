@@ -14,6 +14,7 @@ This document provides instructions for setting up and running the server for ML
    - Navigate to the directory where the repository is cloned.
 
 2. **Install Node Modules**
+   (Note: cd into the assets/js folder first)
    - Run the following command to install the necessary Node.js modules:
      ```sh
      npm install
@@ -21,6 +22,13 @@ This document provides instructions for setting up and running the server for ML
 
 3. **Configure MongoDB Connection**
    - Replace the MongoDB connection string in the server file (`server.js`) with your own. Make sure to use the correct username, password, and database name.
+   - Make a database (choose the free one)
+   - Click Connect and then choose the VSCode option
+![image](https://github.com/hwu27/mlproj/assets/130116077/e41ec684-e9e1-4854-b001-1d53a4e1e3ae)
+
+
+
+![image](https://github.com/hwu27/mlproj/assets/130116077/83250814-6ad7-4279-a411-4b109ced97ed)
 
 4. **Check Directory Paths for Static Files**
    - Ensure that the path in `express.static` is correctly set to point to your `mlproj` directory where your static files (HTML, CSS, JavaScript, etc.) are located.
