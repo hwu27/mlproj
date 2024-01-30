@@ -14,6 +14,7 @@ This document provides instructions for setting up and running the server for ML
    - Navigate to the directory where the repository is cloned.
 
 2. **Install Node Modules**
+   (Note: cd into the assets/js folder first)
    - Run the following command to install the necessary Node.js modules:
      ```sh
      npm install
