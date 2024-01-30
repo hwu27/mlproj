@@ -26,7 +26,7 @@ const Highlight = mongoose.model('Highlight', highlightSchema);
 
 
 // Serve static files from the 'mlproj' directory
-app.use(express.static(path.join('C:', 'Users', 'Huaming Wu', 'Desktop', 'mlproj')));
+app.use(express.static(path.join(__dirname, '..', '..','..', 'mlproj')));
 
 app.use(express.json());
 
