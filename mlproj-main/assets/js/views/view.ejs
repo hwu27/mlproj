@@ -40,7 +40,7 @@
                     <div id="annotations-div" class="col-md-6 bottom-column">
                     </div>
                     <div class="col-md-6 bottom-column">
-                        <div oncontextmenu="return showContextMenu(event);">
+                        <div id="right-column" oncontextmenu="return showContextMenu(event);">
                             <p><pre>
                                 <code class="language-python" id="code-block"><%- data %></code>
                             </pre></p>
@@ -77,6 +77,7 @@
     </footer>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
     <script src="/assets/bootstrap/js/bootstrap.min.js"></script>
     <script src="/assets/js/bs-init.js"></script>
     <script type="module" src="/assets/js/annotation.js"></script>

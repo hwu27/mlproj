@@ -1,6 +1,8 @@
 // Initialize variables to store the start and end IDs of highlights on the server
 var serverStartId;
 var serverEndId;
+var serverHighlightedArr = [];
+var retrievedHighlightData;
 
 // Function to load highlights from the server when the window loads
 window.onload = function() {
@@ -21,6 +23,10 @@ function restoreHighlights(savedHighlights) {
     });
 }
 
+export function retrieveArr() {
+    return retrievedHighlightData.highlightedArr;
+}
+
 // Exported function to capture and process highlights
 export function captureHighlight(startId, endId) {
     // Update server IDs with the current start and end IDs
@@ -29,7 +35,7 @@ export function captureHighlight(startId, endId) {
 
     // Check if the IDs are valid and not equal to 'code-block'
     if (startId && endId && startId !== 'code-block' && endId !== 'code-block') {
-        console.log('check save highlight');
+        //console.log('check save highlight');
         // Apply highlight and save it
         applyHighlightBetween(startId, endId)
         saveHighlight(startId, endId);
@@ -50,6 +56,7 @@ function applyHighlightBetween(startId, endId) {
         if (highlighting) {
             // Add highlight class when within the range
             span.classList.add('highlight');
+            serverHighlightedArr.push(span.id);
         }
 
         if (span.id === endId) {
@@ -66,10 +73,11 @@ function saveHighlightsToServer() {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ startId: serverStartId, endId: serverEndId })
+        body: JSON.stringify({ startId: serverStartId, endId: serverEndId,  highlightedArr: serverHighlightedArr})
     })
     .then(response => response.json())
     .then(data => {
+        serverHighlightedArr = [];
         console.log('Highlights saved', data);
     })
     .catch(error => {
@@ -92,3 +100,4 @@ function loadHighlightsFromServer() {
         console.error('Error loading highlights', error);
     });
 }
+

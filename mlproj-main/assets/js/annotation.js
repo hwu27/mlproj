@@ -1,10 +1,11 @@
 // Initialize global variables
 var startId;
 var endId;
+var highlightedArr = [];
 var selectedInfo;
 
 // Import the captureHighlight function from the highlight.js module
-import { captureHighlight } from './highlight.js';
+import { captureHighlight, retrieveArr } from './highlight.js';
 
 // Add an event listener to the document for the 'click' event
 document.addEventListener('click', function(event) {
@@ -12,15 +13,40 @@ document.addEventListener('click', function(event) {
     if (event.target.tagName === 'INPUT' || event.target.id === 'annotate-div'){
         return;
     }
+    const elementToRemove = document.getElementById("input-text");
+    if (elementToRemove) {
+        elementToRemove.remove();
+    }
+
     document.getElementById('contextMenu').style.display = 'none';
+
 });
+
+const codeSection = document.getElementById("code-block");
+// ->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> TODO 
+codeSection.addEventListener("mouseover", function(event) {
+    console.log('hovering');
+    if (!event.target.classList.contains('highlight')) return;
+
+    let deepestElement = event.target;
+    while (deepestElement.children.length > 0) {
+        deepestElement = deepestElement.children[0];
+    }
+    highlightedArr = retrieveArr();
+    if (highlightedArr != null && highlightedArr.contains(deepestElement)) {
+        console.log('Deepest element:', deepestElement);
+    }
+});
+
 
 // Function to get the text selected by the user
 function getSelectedText() {
     const selection = window.getSelection();
+
     // Check if there is any text selected
     if (selection.rangeCount === 0) {
-        console.log("No selection or selection is collapsed");
+        console.log(selection);
+        console.log("No selections");
         return null;
     }
     // Determine the start and end nodes of the selection
@@ -33,8 +59,8 @@ function getSelectedText() {
 
     // Check if the spans are valid and within a code block with an ID
     if (!anchorSpan || !focusSpan || !anchorSpan.closest('code') || !focusSpan.closest('code') ||
-        !anchorSpan.id || !focusSpan.id) {
-        console.log("One of the spans does not have an ID");
+        !anchorSpan.id || !focusSpan.id || anchorSpan.classList.contains('highlight') || focusSpan.classList.contains('highlight')) {
+        console.log("One of the spans does not have an ID or already highlighted");
         return null;
     }
 
@@ -52,6 +78,10 @@ function showContextMenu(event) {
     if (selectedInfo) {
         console.log(selectedInfo);
     }
+    if (selectedInfo == null) {
+        return;
+    }
+
     var contextMenu = document.getElementById('contextMenu');
     contextMenu.style.display = 'block';
     contextMenu.style.left = event.pageX + 'px';
@@ -63,7 +93,12 @@ window.showContextMenu = showContextMenu;
 
 // Function to add an annotation
 function addAnnotation() {
-    if (!selectedInfo) return; // Return if no valid text is selected
+
+    // Return when input-text is already open, so you cant create multiple inout boxes
+    const inputElement = document.getElementById("input-text");
+    if (inputElement || !selectedInfo) {
+        return;
+    }
 
     startId = selectedInfo.startId;
     endId = selectedInfo.endId;
@@ -74,11 +109,6 @@ function addAnnotation() {
     input.setAttribute('placeholder', 'Enter annotation here');
 
     document.getElementById('contextMenu').appendChild(input);
-
-    // Prevent default behavior for mousedown event on input
-    input.addEventListener('mousedown', function(event) {
-        event.preventDefault();
-    });
 
     input.focus(); // Auto-focus the input box
 
@@ -112,7 +142,9 @@ function saveAnnotation(startId, endId, text) {
     .then(data => {
         if(data.success) {
             var newDiv = document.createElement('div');
+            // Uses the startId as a unique idenitifer for later?
             newDiv.setAttribute('id', 'annotation-' + startId);
+            newDiv.classList.add("annotationLine");
             newDiv.textContent = text;
             document.getElementById('annotations-div').appendChild(newDiv);
         } else {
@@ -132,6 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
             annotations.forEach(annotation => {
                 var newDiv = document.createElement('div');
                 newDiv.textContent = annotation.text;
+                newDiv.classList.add("annotationLine");
                 document.getElementById('annotations-div').appendChild(newDiv);
             });
         })
