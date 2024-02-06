@@ -2,7 +2,6 @@
 var serverStartId;
 var serverEndId;
 var serverHighlightedArr = [];
-var retrievedHighlightData;
 
 // Function to load highlights from the server when the window loads
 window.onload = function() {
@@ -23,8 +22,8 @@ function restoreHighlights(savedHighlights) {
     });
 }
 
-export function retrieveArr() {
-    return retrievedHighlightData.highlightedArr;
+export function recieveIdsArr() {
+    return serverHighlightedArr;
 }
 
 // Exported function to capture and process highlights
@@ -37,10 +36,11 @@ export function captureHighlight(startId, endId) {
     if (startId && endId && startId !== 'code-block' && endId !== 'code-block') {
         //console.log('check save highlight');
         // Apply highlight and save it
-        applyHighlightBetween(startId, endId)
+        applyHighlightBetween(startId, endId);
         saveHighlight(startId, endId);
         // Save the highlights to the server
         saveHighlightsToServer();
+        serverHighlightedArr = [];
     }
 }
 

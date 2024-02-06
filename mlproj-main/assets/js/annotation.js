@@ -5,7 +5,7 @@ var highlightedArr = [];
 var selectedInfo;
 
 // Import the captureHighlight function from the highlight.js module
-import { captureHighlight, retrieveArr } from './highlight.js';
+import { captureHighlight, recieveIdsArr} from './highlight.js';
 
 // Add an event listener to the document for the 'click' event
 document.addEventListener('click', function(event) {
@@ -23,19 +23,30 @@ document.addEventListener('click', function(event) {
 });
 
 const codeSection = document.getElementById("code-block");
-// ->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> TODO 
+// ->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Fix the fact that you need to reload for this to work
 codeSection.addEventListener("mouseover", function(event) {
     console.log('hovering');
-    if (!event.target.classList.contains('highlight')) return;
 
+    highlightedArr = recieveIdsArr();
     let deepestElement = event.target;
     while (deepestElement.children.length > 0) {
         deepestElement = deepestElement.children[0];
     }
-    highlightedArr = retrieveArr();
-    if (highlightedArr != null && highlightedArr.contains(deepestElement)) {
-        console.log('Deepest element:', deepestElement);
+    console.log(deepestElement);
+    if (highlightedArr.includes(deepestElement.id)) {
+        console.log("Applying hovering");
+        highlightedArr.forEach(function(element) {
+            document.getElementById(element).classList.add("hovering");
+          });
+    } else {
+        const hoveringElements = document.querySelectorAll('.hovering');
+        console.log("Removing hovering")
+        hoveringElements.forEach(function(element) {
+            element.classList.remove("hovering");
+          });
     }
+
+    //console.log(deepestElement);
 });
 
 
