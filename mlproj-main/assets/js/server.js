@@ -16,7 +16,8 @@ mongoose.connect('mongodb+srv://huw029:123w123u@mlproj.cg6drd2.mongodb.net/', { 
 const annotationSchema = new mongoose.Schema({
     startId: String,
     endId: String,
-    text: String
+    text: String,
+    lineRange: [String]
 });
 const Annotation = mongoose.model('Annotation', annotationSchema);
 
@@ -40,9 +41,18 @@ app.set('view engine', 'ejs');
 // Route for handling file uploads
 app.post('/upload', upload.single('file'), (req, res) => {
     const file = req.file;
-    // Process the file and generate a new page URL
-    const newPageUrl = `/view/${file.filename}`; 
-    res.json({ success: true, newPageUrl: newPageUrl });
+    if (!file) {
+        return res.status(400).json({ success: false, message: 'No file was uploaded.' });
+    }
+    // You retain the random filename for the URL
+    const newPageUrl = `/view/${file.filename}`;
+    // But you also send back the original file name for reference
+    const originalName = file.originalname;
+    res.json({ 
+        success: true, 
+        newPageUrl: newPageUrl, 
+        originalName: originalName // Send the original name back in the response
+    });
 });
 
 // Route for viewing uploaded files
@@ -73,9 +83,9 @@ app.get('/view/:fileId', (req, res) => {
 
 // Route to save annotations to the database
 app.post('/save_annotation', async (req, res) => {
-    const { lineId, text } = req.body;
+    const { startId, endId, text, lineRange} = req.body;
     try {
-        const newAnnotation = new Annotation({ lineId, text });
+        const newAnnotation = new Annotation({ startId, endId, text, lineRange});
         await newAnnotation.save();
         res.json({ success: true });
     } catch (error) {
@@ -108,7 +118,6 @@ app.post('/save_highlights', async (req, res) => {
 // Route to load highlights from the database
 app.get('/load_highlights', async (req, res) => {
     try {
-        console.log("Loaded Highlights");
         const highlights = await Highlight.find({});
         res.json(highlights);
     } catch (error) {

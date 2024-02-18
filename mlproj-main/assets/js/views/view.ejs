@@ -24,13 +24,13 @@
     </nav>
     <section>
         <div>
-            <p class="text-center sub-heading start-middle">blank</p>
+            <p class="text-center sub-heading start-middle" id="file-name">No Name</p>
         </div>
         <div>
             <div class="container">
                 <div class="row">
                     <div class="col-md-6 top-column">
-                        <p class="top-column-p">Tools</p>
+                        <p class="top-column-p">Annotations</p>
                     </div>
                     <div class="col-md-6 top-column">
                         <p class="top-column-p">Code</p>
@@ -41,9 +41,9 @@
                     </div>
                     <div class="col-md-6 bottom-column">
                         <div id="right-column" oncontextmenu="return showContextMenu(event);">
-                            <p><pre>
+                            <pre>
                                 <code class="language-python" id="code-block"><%- data %></code>
-                            </pre></p>
+                            </pre>
                         </div>
                     </div>
                 </div>
@@ -85,7 +85,7 @@
     <script src="/assets/js/loadPage.js"></script>
     
     <ul id="contextMenu">
-        <li id="contextList"><div onclick="addAnnotation()" id="annotate-div">Annotate</div></li>
+        <li id="contextList"><div onclick="addAnnotation()" id="annotate-choice">Annotate</div></li>
     </ul>
 
     <input type="hidden" id="selected-text">

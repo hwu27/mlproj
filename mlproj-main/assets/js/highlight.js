@@ -22,13 +22,28 @@ function restoreHighlights(savedHighlights) {
     });
 }
 
-export function recieveIdsArr() {
-    return serverHighlightedArr;
+
+export function receiveIdsArr(elementId) {
+    return fetch('/load_highlights') // Return the fetch promise so you can wait for it to complete
+        .then(response => response.json())
+        .then(highlights => {
+            for (const highlight of highlights) {
+                if (highlight.highlightedArr.includes(elementId.id)) {
+                    return highlight.highlightedArr; // Return the matched highlightedArr
+                }
+            }
+            return []; // Return an empty array if no match is found
+        })
+        .catch(error => {
+            console.error('Error finding match:', error);
+            return []; // Return an empty array in case of error
+        });
 }
 
-// Exported function to capture and process highlights
+// Exported function to capture and process highlightss
 export function captureHighlight(startId, endId) {
     // Update server IDs with the current start and end IDs
+    serverHighlightedArr = []; // How to fix this? every time I send the data back to server, I reset
     serverStartId = startId;
     serverEndId = endId;
 
@@ -36,11 +51,11 @@ export function captureHighlight(startId, endId) {
     if (startId && endId && startId !== 'code-block' && endId !== 'code-block') {
         //console.log('check save highlight');
         // Apply highlight and save it
+        arrCheckHoveringCreator(startId, endId);
         applyHighlightBetween(startId, endId);
         saveHighlight(startId, endId);
         // Save the highlights to the server
         saveHighlightsToServer();
-        serverHighlightedArr = [];
     }
 }
 
@@ -56,7 +71,6 @@ function applyHighlightBetween(startId, endId) {
         if (highlighting) {
             // Add highlight class when within the range
             span.classList.add('highlight');
-            serverHighlightedArr.push(span.id);
         }
 
         if (span.id === endId) {
@@ -64,6 +78,26 @@ function applyHighlightBetween(startId, endId) {
         }
     });
 }
+
+// Function to create array for checking hovering
+function arrCheckHoveringCreator(startId, endId) {
+    let createArr = false;
+    // Iterate through each span element within the code block
+    document.querySelectorAll('#code-block span').forEach(span => {
+        if (span.id === startId) {
+            createArr = true;
+        }
+
+        if (createArr) {
+            serverHighlightedArr.push(span.id); 
+        }
+
+        if (span.id === endId) {
+            createArr = false;
+        }
+    });
+}
+
 
 // Function to save highlights to the server
 function saveHighlightsToServer() {

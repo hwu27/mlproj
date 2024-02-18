@@ -11,6 +11,7 @@ document.getElementById('file-upload').addEventListener('change', function(event
         .then(response => response.json())
         .then(data => {
             if (data.success) {
+                localStorage.setItem('recentUploadOriginalName', data.originalName);
                 // Redirect to the new page URL if the server indicates success
                 window.location.href = data.newPageUrl;
             } else {
@@ -23,4 +24,3 @@ document.getElementById('file-upload').addEventListener('change', function(event
         });
     }
 }, false);
-

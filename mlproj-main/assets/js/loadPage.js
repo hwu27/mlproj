@@ -26,29 +26,28 @@ document.addEventListener('DOMContentLoaded', () => {
             childNodes.forEach(child => {
                 // Use try-catch block to catch any errors in processing
                 try {
-                    if (child.nodeType === Node.TEXT_NODE) {
-                        const span = document.createElement('span');
-                        span.id = `word-${wordIndex++}`;
-                        span.textContent = child.textContent;
-                        child.parentNode.replaceChild(span, child);
-                    } else if (child.nodeType === Node.ELEMENT_NODE && child.tagName === 'SPAN') {
-                        if (!child.id) {
-                            var textContent = child.textContent;
-                            var words = textContent.split(/\s+/);
-                            if (words.length == 1) {
-                                child.id = `word-${wordIndex++}`;
-                            } else {
-                                child.textContent = ''; // Clear the existing content
-                                words.forEach(word => {
-                                    if (word.length > 0) {
-                                        const wordSpan = document.createElement('span');
-                                        wordSpan.id = `word-${wordIndex++}`;
-                                        wordSpan.textContent = word + ' ';
-                                        child.appendChild(wordSpan);
-                                    }
-                                });
+                    // Check if the node is a text node or a span without an ID
+                    if (child.nodeType === Node.TEXT_NODE || (child.nodeType === Node.ELEMENT_NODE && child.tagName === 'SPAN' && !child.id)) {
+                        const textContent = child.textContent;
+                        const segments = textContent.split(/([^a-zA-Z]+)/);
+
+                        // Clear the existing content
+                        child.textContent = '';
+                        
+                        segments.forEach(segment => {
+                            if (segment) {
+                                const span = document.createElement('span');
+                                span.id = `word-${wordIndex++}`; // Assign an ID
+                                span.textContent = segment;
+                                if (child.nodeType === Node.ELEMENT_NODE && child.tagName === 'SPAN') {
+                                    // Preserve the class of the original span
+                                    span.className = child.className;
+                                }
+                                child.parentNode.insertBefore(span, child);
                             }
-                        }
+                        });
+                        // Remove the original node after its content has been re-inserted as spans
+                        child.parentNode.removeChild(child);
                     }
                 } catch (error) {
                     console.error('Error processing child node:', child, error);
@@ -57,3 +56,24 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }, 0); // Adjust the timeout as needed
 });
+
+// Retrieve the original name from localStorage and display it.
+document.addEventListener('DOMContentLoaded', () => {
+    // Retrieve the original name from localStorage
+    const originalName = localStorage.getItem('recentUploadOriginalName');
+
+    // If the original name exists, set it to the text of the element
+    if (originalName) {
+        document.getElementById('file-name').innerText = originalName;
+
+        // Clear the original name from localStorage since it's no longer needed
+        localStorage.removeItem('recentUploadOriginalName');
+    }
+});
+
+/* This is for the case where you want to assign special characters some type of class (might need it later)
+if (/^[a-zA-Z]+$/.test(segment)) {
+    span.className = 'word'; // Class for words
+} else {
+    span.className = 'special-character'; // Class for non-letter characters
+}*/
