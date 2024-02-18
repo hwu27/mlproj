@@ -10,7 +10,7 @@ const mongoose = require('mongoose');
 const upload = multer({ dest: 'uploads/' });
 
 // Connect to MongoDB using Mongoose with the provided connection string
-mongoose.connect('mongodb+srv://huw029:123w123u@mlproj.cg6drd2.mongodb.net/', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect('mongodb+srv://<your database here>', { useNewUrlParser: true, useUnifiedTopology: true });
 
 // Define a schema and model for annotations
 const annotationSchema = new mongoose.Schema({
