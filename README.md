@@ -16,6 +16,9 @@ The website is meant to be a way to share and annotate code in a more intuitive 
 
 ## Annotation:
 
+![image](https://github.com/hwu27/mlproj/assets/130116077/570bdf04-bd89-4f2b-8165-0ecb88a86a8d)
+
+
 ![image](https://github.com/hwu27/mlproj/assets/130116077/0c203665-cb9e-46f9-a609-9d119ba15d3d)
 
 
