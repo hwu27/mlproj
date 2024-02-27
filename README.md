@@ -1,6 +1,6 @@
 # MLProj Server Setup
 
-This document provides instructions for setting up and running the server for MLProj, a Node.js application using Express, Multer, and Mongoose.
+This document provides instructions for setting up and running the server for MLProj using Node.js  
 
 ## Prerequisites
 
@@ -27,7 +27,6 @@ This document provides instructions for setting up and running the server for ML
 ![image](https://github.com/hwu27/mlproj/assets/130116077/e41ec684-e9e1-4854-b001-1d53a4e1e3ae)
 
 
-
 ![image](https://github.com/hwu27/mlproj/assets/130116077/83250814-6ad7-4279-a411-4b109ced97ed)
 
 4. **Check Directory Paths for Static Files**
@@ -44,17 +43,3 @@ This document provides instructions for setting up and running the server for ML
 
 2. **Accessing the Application**
    - Open a web browser and go to `http://localhost:3000`. This will load the application served by your Node.js server.
-
-## Usage
-
-- **Uploading Files**: Use the `/upload` endpoint to upload files. The files will be stored in the `uploads` directory.
-- **Viewing Files**: Access uploaded files via the `/view/:fileId` endpoint.
-- **Saving Annotations**: Use the `/save_annotation` endpoint to save annotations.
-- **Loading Annotations**: Retrieve saved annotations using the `/load_annotations` endpoint.
-- **Saving Highlights**: Save text highlights using the `/save_highlights` endpoint.
-- **Loading Highlights**: Retrieve saved highlights via the `/load_highlights` endpoint.
-
-## Notes
-
-- Ensure that your MongoDB Atlas cluster is accessible from your IP address.
-- For security reasons, avoid hardcoding sensitive information like database credentials directly in the code. Consider using environment variables.
