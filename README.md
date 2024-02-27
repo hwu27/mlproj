@@ -3,24 +3,27 @@
 The website is meant to be a way to share and annotate code in a more intuitive way. People can easily teach their code to others or receive help from others. This could make project/team onboarding quicker as well as create a community of code exchange that is similar to GitHub and Notebooks.
 
 
-Landing Page:
+## Landing Page:
 
 ![image](https://github.com/hwu27/mlproj/assets/130116077/f1c6a799-6bf5-4a0d-9d6f-a7086bb179c5)
 
 ![image](https://github.com/hwu27/mlproj/assets/130116077/10e8fe58-ddd0-4c73-ba95-5154eeb1d09a)
 
 
-Code Submission:
+## Code Submission:
 
 ![image](https://github.com/hwu27/mlproj/assets/130116077/658a1bb9-0ffc-455c-9d55-e5cf6b774839)
 
-Annotation and Highlights: 
+## Annotation:
 
 ![image](https://github.com/hwu27/mlproj/assets/130116077/0c203665-cb9e-46f9-a609-9d119ba15d3d)
 
+
+## Highlights: 
+
 ![image](https://github.com/hwu27/mlproj/assets/130116077/458eceac-b556-4b9a-b99c-0db7ab285e43)
 
-Hovering: 
+## Hovering: 
 
 ![image](https://github.com/hwu27/mlproj/assets/130116077/47c6260e-8fee-4e35-8fa2-54b314c583fb)
 
