@@ -2,6 +2,11 @@
 
 The website is meant to be a way to share and annotate code in a more intuitive way. People can easily teach their code to others or receive help from others. This could make project/team onboarding quicker as well as create a community of code exchange that is similar to GitHub and Notebooks.
 
+Implemented with:
+
+- HTML, CSS, JS
+- MongoDB for saving and loading annotations
+- Node.js for server
 
 ## Landing Page:
 
